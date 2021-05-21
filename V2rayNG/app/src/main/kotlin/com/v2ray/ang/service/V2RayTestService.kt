@@ -50,7 +50,10 @@ class V2RayTestService : VpnService() {
                 override fun onAvailable(network: Network) {
                     setUnderlyingNetworks(arrayOf(network))
                 }
-                override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities?) {
+                override fun onCapabilitiesChanged(
+                    network: Network,
+                    networkCapabilities: NetworkCapabilities
+                ) {
                     // it's a good idea to refresh capabilities
                     setUnderlyingNetworks(arrayOf(network))
                 }
@@ -86,7 +89,7 @@ class V2RayTestService : VpnService() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        index=intent.getStringExtra("index")
+        index=intent.getStringExtra("index")!!
         Log.e("onStartCommand",index)
         startV2ray2(index)
         return START_STICKY
@@ -131,7 +134,7 @@ class V2RayTestService : VpnService() {
     private fun stopV2Ray(isForced: Boolean = true) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             if (listeningForDefaultNetwork) {
-                connectivity.unregisterNetworkCallback(defaultNetworkCallback)
+                connectivity.unregisterNetworkCallback(defaultNetworkCallback!!)
                 listeningForDefaultNetwork = false
             }
         }

@@ -101,9 +101,9 @@ object Utils {
      */
     fun setClipboard(context: Context, content: String) {
         try {
-            val cmb = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            var cmb = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText(null, content)
-            cmb.primaryClip = clipData
+            cmb.setPrimaryClip(clipData)
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -89,7 +89,10 @@ class V2RayVpnService : VpnService() {
                 override fun onAvailable(network: Network) {
                     setUnderlyingNetworks(arrayOf(network))
                 }
-                override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities?) {
+                override fun onCapabilitiesChanged(
+                    network: Network,
+                    networkCapabilities: NetworkCapabilities
+                ) {
                     // it's a good idea to refresh capabilities
                     setUnderlyingNetworks(arrayOf(network))
                 }
@@ -183,12 +186,16 @@ class V2RayVpnService : VpnService() {
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            connectivity.requestNetwork(defaultNetworkRequest, defaultNetworkCallback)
+            defaultNetworkRequest?.let { defaultNetworkCallback?.let { it1 ->
+                connectivity.requestNetwork(it,
+                    it1
+                )
+            } }
             listeningForDefaultNetwork = true
         }
 
         // Create a new interface using the builder and save the parameters.
-        mInterface = builder.establish()
+        mInterface = builder.establish()!!
         sendFd()
         startSpeedNotification()
     }
@@ -268,7 +275,7 @@ class V2RayVpnService : VpnService() {
 //        saveVpnNetworkInfo(configName, info)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             if (listeningForDefaultNetwork) {
-                connectivity.unregisterNetworkCallback(defaultNetworkCallback)
+                defaultNetworkCallback?.let { connectivity.unregisterNetworkCallback(it) }
                 listeningForDefaultNetwork = false
             }
         }

@@ -107,14 +107,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
         }
 
-        var recsite1= getResources().getString(R.string.recommended_site_1)
+        var recsite1= resources.getString(R.string.recommended_site_1)
         recommended_site_1.setBackgroundColor(Color.TRANSPARENT);
         recommended_site_1.loadData(recsite1,"text/html; charset=utf-8",  "UTF-8")
 
         recycler_view.setHasFixedSize(true)
         val llm=RecyclerViewNoBugLinearLayoutManager(this)
-        llm.setStackFromEnd(true)
-        llm.setReverseLayout(true)
+        llm.stackFromEnd = true
+        llm.reverseLayout = true
         recycler_view.layoutManager =llm
         recycler_view.adapter = adapter
 
@@ -132,7 +132,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             if(v2RayApplication.defaultDPreference.getPrefBoolean(SettingsActivity.PREF_GET_FREE_SERVERS, false)){
                 importFreeSubs()
             }
-            importConfigViaBuildinSub()
+            importConfigViaBuildInSub()
         }
     }
 
@@ -191,7 +191,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             REQUEST_FILE_CHOOSER -> {
                 if (resultCode == RESULT_OK) {
                     val uri = data!!.data
-                    readContentFromUri(uri)
+                    if (uri != null) {
+                        readContentFromUri(uri)
+                    }
                 }
             }
             REQUEST_SCAN_URL ->
@@ -255,7 +257,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             if(v2RayApplication.defaultDPreference.getPrefBoolean(SettingsActivity.PREF_GET_FREE_SERVERS, false)){
                 importFreeSubs()
             }
-            importConfigViaBuildinSub()
+            importConfigViaBuildInSub()
             true
         }
         R.id.sub_update -> {
@@ -387,7 +389,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     /**
      * import config from qrcode
      */
-    fun importQRcode(requestCode: Int): Boolean {
+    private fun importQRcode(requestCode: Int): Boolean {
 //        try {
 //            startActivityForResult(Intent("com.google.zxing.client.android.SCAN")
 //                    .addCategory(Intent.CATEGORY_DEFAULT)
@@ -408,7 +410,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     /**
      * import config from clipboard
      */
-    fun importClipboard()
+    private fun importClipboard()
             : Boolean {
         try {
             val clipboard = Utils.getClipboard(this)
@@ -420,7 +422,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return true
     }
 
-    fun importBatchConfig(server: String?, subid: String = "") : Boolean {
+    private fun importBatchConfig(server: String?, subid: String = "") : Boolean {
         val count = AngConfigManager.importBatchConfig(server, subid)
         if (count > 0) {
             toast(R.string.toast_success)
@@ -432,7 +434,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    fun importConfigCustomClipboard()
+    private fun importConfigCustomClipboard()
             : Boolean {
         try {
             val configText = Utils.getClipboard(this)
@@ -451,7 +453,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     /**
      * import config from local config file
      */
-    fun importConfigCustomLocal(): Boolean {
+    private fun importConfigCustomLocal(): Boolean {
         try {
             showFileChooser()
         } catch (e: Exception) {
@@ -461,7 +463,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return true
     }
 
-    fun importConfigCustomUrlClipboard()
+    private fun importConfigCustomUrlClipboard()
             : Boolean {
         try {
             val url = Utils.getClipboard(this)
@@ -479,7 +481,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     /**
      * import config from url
      */
-    fun importConfigCustomUrl(url: String?): Boolean {
+    private fun importConfigCustomUrl(url: String?): Boolean {
         try {
             if (!Utils.isValidUrl(url)) {
                 toast(R.string.toast_invalid_url)
@@ -500,14 +502,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     /**
      * import config from BuildinSub
      */
-    fun importConfigViaBuildinSub(){
+    private fun importConfigViaBuildInSub(){
         toast(R.string.update_builtin_servers)
-        var  builtinSubUrls  = getResources().getStringArray(R.array.builtinSubUrls)
+        var  builtinSubUrls  = resources.getStringArray(R.array.builtinSubUrls)
         doAsync {
             VpnEncrypt.builtinServersUpdated=false
-            for (i in 0 until builtinSubUrls.size) {
+            for (i in builtinSubUrls.indices) {
                 try {
-                    val url = builtinSubUrls.get(i)
+                    val url = builtinSubUrls[i]
                     //Log.d("Main", url)
                     val configText = URL(url).readText()
                     //if (configText.isNotEmpty()&&configText.isNotBlank())VpnEncrypt.builtinServersUpdated=true
@@ -523,8 +525,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     }
                 }
                 catch (e: Exception) {
-                    //Log.e("VpnEncrypt","",e)
-                    //Log.e("updatevpn",e.message)  //with url
                     Log.e("VpnEncrypt",e.stackTrace.first().toString())
                 }
             }
@@ -538,12 +538,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     fun importFreeSubs(): Boolean {
         try {
             toast(R.string.title_sub_update)
-            doAsync {
-                val configText = URL(VpnEncrypt.freeSubUrl).readText()
-                uiThread {
-                    importBatchConfig(Utils.decode(configText), VpnEncrypt.freeSubID)
-                }
-            }
+//            doAsync {
+//                val configText = URL(VpnEncrypt.freeSubUrl).readText()
+//                uiThread {
+//                    importBatchConfig(Utils.decode(configText), VpnEncrypt.freeSubID)
+//                }
+//            }
         } catch (e: Exception) {
             e.printStackTrace()
             return false
@@ -554,7 +554,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     /**
      * import config from sub
      */
-    fun importConfigViaSub()
+    private fun importConfigViaSub()
             : Boolean {
         try {
             toast(R.string.title_sub_update)
@@ -613,7 +613,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     if (it) {
                         try {
                             val inputStream = contentResolver.openInputStream(uri)
-                            val configText = inputStream.bufferedReader().readText()
+                            val configText = inputStream!!.bufferedReader().readText()
                             importCustomizeConfig(configText)
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -626,7 +626,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     /**
      * import customize config
      */
-    fun importCustomizeConfig(server: String?) {
+    private fun importCustomizeConfig(server: String?) {
         if (server == null) {
             return
         }
@@ -667,8 +667,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     activity?.isRunning = false
                 }
                 AppConfig.MSG_TEST_SUCCESS -> {
-                    var mixmsg=intent?.getStringExtra("content")
-                    var msg = mixmsg.split(",")
+                    var mixmsg= intent.getStringExtra("content")
+                    var msg = mixmsg!!.split(",")
                     configs.vmess[msg[0].toInt()].testResult=msg[1]
                     activity?.adapter?.updateSelectedItem(msg[0].toInt())
                     //activity?.isRunning = true
@@ -738,7 +738,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 Utils.openUri(this, getString(R.string.promotionUrl))
             }
             R.id.donate -> {
-                Utils.openUri(this, AppConfig.abloutUrl)
+                Utils.openUri(this, AppConfig.aboutUrl)
 //                startActivity<InappBuyActivity>()
             }
             R.id.logcat -> {

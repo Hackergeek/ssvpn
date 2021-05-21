@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 //apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.3'
     archivesBaseName = "v2ray.vpn"
     compileOptions {
         targetCompatibility = "8"
@@ -28,12 +28,12 @@ android {
             keyPassword '123456'
             storePassword '123456'
         }
-        debug {
+     /*   debug {
             storeFile file("../key.jks")
             keyAlias 'ang'
             keyPassword '123456'
             storePassword '123456'
-        }
+        }*/
     }
 
     buildTypes {
@@ -48,7 +48,7 @@ android {
             minifyEnabled false
             zipAlignEnabled false
             shrinkResources false
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
         }
     }
 

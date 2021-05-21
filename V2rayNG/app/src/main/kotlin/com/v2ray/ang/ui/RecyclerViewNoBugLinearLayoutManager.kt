@@ -16,9 +16,9 @@ class RecyclerViewNoBugLinearLayoutManager : LinearLayoutManager {
         try { //try catch一下
             super.onLayoutChildren(recycler, state)
         } catch (e: IndexOutOfBoundsException) {
-            Log.e("speedup.vpn",e.message)
+            e.message?.let { Log.e("speedup.vpn", it) }
         } catch (e: Exception) {
-            Log.e("speedup.vpn",e.message)
+            e.message?.let { Log.e("speedup.vpn", it) }
         }
     }
 }

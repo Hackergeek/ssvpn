@@ -123,7 +123,11 @@ class ScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
                 if (resultCode == RESULT_OK) {
                     try {
                         val uri = data!!.data
-                        val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
+                        val bitmap = BitmapFactory.decodeStream(uri?.let {
+                            contentResolver.openInputStream(
+                                it
+                            )
+                        })
                         val text = QRCodeDecoder.syncDecodeQRCode(bitmap)
                         finished(text)
                     } catch (e: Exception) {

@@ -37,7 +37,7 @@ object AppConfig {
     const val v2rayCustomRoutingListUrl = "https://raw.githubusercontent.com/2dust/v2rayCustomRoutingList/master/"
     const val v2rayNGIssues = "https://github.com/bannedbook/v2ray.vpn/issues"
     const val promotionUrl = "https://lihi1.com/mWZJL"
-    const val abloutUrl = "https://github.com/bannedbook/v2ray.vpn"
+    const val aboutUrl = "https://github.com/bannedbook/v2ray.vpn"
 
     const val DNS_AGENT = "1.1.1.1"
     const val DNS_DIRECT = "223.5.5.5"

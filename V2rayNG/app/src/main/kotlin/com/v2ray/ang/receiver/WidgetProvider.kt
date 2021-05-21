@@ -5,12 +5,10 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.widget.RemoteViews
-import com.v2ray.ang.R
 import com.v2ray.ang.AppConfig
+import com.v2ray.ang.R
 import com.v2ray.ang.util.Utils
-import org.jetbrains.anko.toast
 
 class WidgetProvider : AppWidgetProvider() {
     /**
